@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { ConversionEvent } from "./conversion-event";
+import { ConversionEvent } from "./user-events";
 
 export type OfferMetadata = {
     conversionCount: number;
@@ -10,21 +10,12 @@ export type OfferMetadata = {
     startTime: number;
     endTime: number;
 }
+export enum RewardType {
+    POINTS = 'POINTS',
+    TOKENS = 'TOKENS',
+}
 export type OfferReward = {
     rewardType: RewardType;
     amount: number;
     token?: PublicKey; // null for Points
-}
-export type CreateOfferParams = {
-    audienceId: string;
-    conversionEvent: ConversionEvent;
-    publisherReward?: OfferReward;
-    userReward?: OfferReward;
-    raffleReward?: OfferReward;
-    metadata: OfferMetadata;
-}
-
-export enum RewardType {
-    POINTS = 'POINTS',
-    TOKENS = 'TOKENS',
 }

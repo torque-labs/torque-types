@@ -4,7 +4,7 @@ export enum ConversionEventType {
 }
 export type ConversionEvent = {
     eventType: ConversionEventType;
-    requirement?: ActionRequirements | StakedSolRequirements | OpenPositionRequirements | TokenHoldingRequirements; // null for click
+    requirement?: ActionRequirements
 }
 
 /**
@@ -14,8 +14,8 @@ export enum ActionType {
     SWAP = 'SWAP',
     VOTE = 'VOTE',
     PROGRAM_INTERACTION = 'PROGRAM_INTERACTION',
-    NFT_MINT = 'NFT_MINT',
-    BRIDGE = 'BRIDGE',
+    NFT_MINT = 'ADD_LIQUIDITY',
+    BRIDGE = 'BURN_TOKEN',
 }
 
 /**

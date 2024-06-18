@@ -1,0 +1,34 @@
+
+
+AUDIENCE BUILDER
+- build audience
+- verify audience
+
+AUDIENCE CRUD
+- save audience
+- delete audience
+- update audience
+- get audiences
+
+OFFERS
+- create offer
+- get offers
+- delete offer
+
+USER JOURNEY
+- accept offer
+- convert offer
+
+TARGET CONFIGURATIONS
+- swap
+- program interaction
+- bridge
+- token holding
+- sol staked
+- open position
+
+EVENTS TO CONVERT USERS
+- swap
+- burn
+- interact
+- vote

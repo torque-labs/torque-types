@@ -1,5 +1,7 @@
 import { SolanaSignInInput, SolanaSignInOutput } from '@solana/wallet-standard-features';
 import { Audience } from './audience';
+import { ConversionEvent } from './user-events';
+import { OfferMetadata, OfferReward } from './offer';
 
 /**
  * The API response success type.
@@ -29,7 +31,7 @@ export enum ApiEventType {
 /**
  * The rewards type of a campaign.
  */
-export enum ApiRewardType {
+export enum RewardType {
     POINTS = 'POINTS',
     TOKENS = 'TOKENS',
 }
@@ -217,4 +219,13 @@ export enum ApiTxnTypes {
     CampaignEnd = 'CampaignEnd',
     PublisherPayout = 'PublisherPayout',
     PublisherCreate = 'PublisherCreate',
+}
+
+export type ApiCreateOffer = {
+    audienceId: string;
+    conversionEvent: ConversionEvent;
+    publisherReward?: OfferReward;
+    userReward?: OfferReward;
+    raffleReward?: OfferReward;
+    metadata: OfferMetadata;
 }
