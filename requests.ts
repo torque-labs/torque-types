@@ -154,8 +154,8 @@ export const schemaCreateOfferRequest = z.object({
   createCamapign: z.object({
     metadata: schemaOfferMetadata,
     publsiherReward: schemaOfferReward,
-    userRewards: schemaOfferReward,
-    raffleRewards: schemaOfferReward.nullish(),
+    userReward: schemaOfferReward,
+    raffleReward: schemaOfferReward.nullish(),
     audience: z.string(),
     conversionEvent: schemaConversionEvent,
   })
