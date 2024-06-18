@@ -10,10 +10,12 @@ export type OfferMetadata = {
   startTime: number;
   endTime: number;
 };
+
 export enum RewardType {
   POINTS = "POINTS",
   TOKENS = "TOKENS",
 }
+
 export type OfferReward =
   | {
       rewardType: RewardType.POINTS;
