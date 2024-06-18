@@ -1,3 +1,6 @@
+import { Audience } from "./audience";
+import { ConversionEvent } from "./conversion";
+
 export type OfferMetadata = {
   conversionCount: number;
   title: string;
