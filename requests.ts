@@ -201,9 +201,9 @@ export type GetUserJourneysRequest = z.infer<
 export const schemaCreateOfferRequest = z.object({
   createCamapign: z.object({
     metadata: schemaOfferMetadata,
-    publsiherReward: schemaOfferReward,
-    userRewards: schemaOfferReward,
-    raffleRewards: schemaOfferReward.nullish(),
+    publisherReward: schemaOfferReward,
+    userReward: schemaOfferReward,
+    raffleReward: schemaOfferReward.nullish(),
     audience: z.string(),
     conversionEvent: schemaConversionEvent,
   }),
