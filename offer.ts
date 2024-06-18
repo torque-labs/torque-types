@@ -1,4 +1,3 @@
-import { PublicKey } from "@solana/web3.js";
 import { ConversionEvent } from "./conversion";
 import { Audience } from "./audience";
 
@@ -18,7 +17,7 @@ export enum RewardType {
 export type OfferReward = {
     rewardType: RewardType;
     amount: number;
-    token?: PublicKey; // null for Points
+    token?: string; // null for Points
 }
 export type CreateOffer = {
     offerMetadata: OfferMetadata;
