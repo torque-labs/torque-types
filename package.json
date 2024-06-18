@@ -1,11 +1,15 @@
 {
   "name": "@torque-labs/torque-types",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Types to be used across Torque's system.",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Torque Labs",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@solana/wallet-standard-features": "^1.2.0",
+    "zod": "^3.23.8"
+  }
 }

@@ -9,7 +9,6 @@ export type OfferMetadata = {
 };
 
 export enum RewardType {
-<<<<<<< Updated upstream
   POINTS = "POINTS",
   TOKENS = "TOKENS",
 }
@@ -33,13 +32,3 @@ export type CreateOffer = {
   audience: Audience;
   conversionEvent: ConversionEvent;
 };
-=======
-    POINTS = 'POINTS',
-    TOKENS = 'TOKENS',
-}
-export type OfferReward = {
-    rewardType: RewardType;
-    amount: number;
-    token?: string; // null for Points
-}
->>>>>>> Stashed changes
