@@ -1,11 +1,11 @@
 {
-  "name": "torque-types",
+  "name": "@torque-labs/torque-types",
   "version": "1.0.0",
-  "description": "Types to be used across Torque's system",
-  "main": "index.js",
+  "description": "Types to be used across Torque's system.",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Torque Labs",
+  "license": "MIT"
 }
