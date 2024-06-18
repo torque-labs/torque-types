@@ -3,8 +3,9 @@ import z from "zod";
 export enum ConversionEventType {
   CLICK = "CLICK",
   SWAP = "SWAP",
-  VOTE = "VOTE",
-  PROGRAM_INTERACTION = "PROGRAM_INTERACTION",
+  CAST_VOTE = "CAST_VOTE",
+  ADD_LIQUIDITY = "ADD_LIQUIDITY",
+  INTERACT = "INTERACT",
   BURN = "BURN",
 }
 
@@ -38,11 +39,11 @@ export const schemaConversionEvent = z.discriminatedUnion("eventType", [
     requirement: schemaSwapConversion,
   }),
   z.object({
-    eventType: z.literal(ConversionEventType.VOTE),
+    eventType: z.literal(ConversionEventType.CAST_VOTE),
     requirement: schemaVoteConversion,
   }),
   z.object({
-    eventType: z.literal(ConversionEventType.PROGRAM_INTERACTION),
+    eventType: z.literal(ConversionEventType.INTERACT),
     requirement: schemaProgramInteractionConversion,
   }),
   z.object({

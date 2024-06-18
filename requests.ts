@@ -4,8 +4,17 @@ import {
   SolanaSignInOutput,
 } from "@solana/wallet-standard-features";
 import { Audience, schemaAudience } from "./audience";
-import { ConversionEvent, ConversionEventType, schemaConversionEvent } from "./conversion";
-import { OfferMetadata, OfferReward, schemaOfferMetadata, schemaOfferReward } from "./offer";
+import {
+  ConversionEvent,
+  ConversionEventType,
+  schemaConversionEvent,
+} from "./conversion";
+import {
+  OfferMetadata,
+  OfferReward,
+  schemaOfferMetadata,
+  schemaOfferReward,
+} from "./offer";
 
 /**
  * FUNCTION REQUESTS
@@ -19,7 +28,9 @@ export const schemaBuildAudienceWorkerRequest = z.object({
   audience: schemaAudience,
   skipCache: z.boolean().optional(),
 });
-export type BuildAudienceWorkerRequest = z.infer<typeof schemaBuildAudienceWorkerRequest>;
+export type BuildAudienceWorkerRequest = z.infer<
+  typeof schemaBuildAudienceWorkerRequest
+>;
 
 export const schemaVerifyAudienceRequest = z.object({
   audience: schemaAudience,
@@ -31,33 +42,62 @@ export type VerifyAudienceRequest = z.infer<typeof schemaVerifyAudienceRequest>;
  * API REQUESTS
  */
 
+/**
+ * CAMPAIGNS
+ */
+
+// /campaigns
+export const schemaGetCampaignsRequest = z.object({
+  limit: z.number().optional(),
+  page: z.number().optional(),
+});
+export type GetCampaignsRequest = z.infer<typeof schemaGetCampaignsRequest>;
+
+// /campaigns/:campaignId
+export const schemaGetSingleCampaignRequest = z.object({
+  campaignId: z.string().optional(),
+});
+export type GetSingleCampaignRequest = z.infer<
+  typeof schemaGetCampaignsRequest
+>;
+
 // /asymmetricReward
 export const schemaAsymmetricRewardRequest = z.object({
   campaignId: z.string(),
 });
-export type AsymmetricRewardRequest = z.infer<typeof schemaAsymmetricRewardRequest>;
+export type AsymmetricRewardRequest = z.infer<
+  typeof schemaAsymmetricRewardRequest
+>;
 
-// /campaigns/:campaignId
-export const schemaGetCampaignsRequest = z.object({
-  campaignId: z.string().optional(),
-});
-export type GetCampaignsRequest = z.infer<typeof schemaGetCampaignsRequest>;
+/**
+ * EVENTS
+ */
 
 // /events
+
 export const schemaSubmitEventRequest = z.object({
   pubKey: z.string(),
-  type: z.string(), // Assuming ConversionEventType is a string enum or union
+  type: z.nativeEnum(ConversionEventType),
   campaignId: z.string(),
-  publisherPubKey: z.string(),
-  attributes: z.any().optional(),
-  transaction: z.string(),
-  rawTransactionData: z.any(),
+  publisherKey: z.string(),
+  attributes: z.record(z.string(), z.any()),
+  transaction: z.string().optional(),
+  rawTransactionData: z.any().optional(),
 });
+
 export type SubmitEventRequest = z.infer<typeof schemaSubmitEventRequest>;
 
 // /journey
 export const schemaGetJourneyRequest = z.object({
-  conversionEvent: z.any(), // Assuming ConversionEvent is an object or specific type
+  userPubKey: z.string(),
+  programAddress: z.string().optional(),
+  eventType: z.nativeEnum(ConversionEventType).optional(),
+  token: z.string().optional(),
+  amount: z.string().optional(),
+  proposal: z.string().optional(),
+  collectionId: z.string().optional(),
+  pubKey: z.string().optional(),
+  limit: z.number().optional(),
 });
 export type GetJourneyRequest = z.infer<typeof schemaGetJourneyRequest>;
 
@@ -71,7 +111,9 @@ export type SubmitJourneyRequest = z.infer<typeof schemaSubmitJourneyRequest>;
 export const schemaGetLeaderboardsRequest = z.object({
   campaignId: z.string(),
 });
-export type GetLeaderboardsRequest = z.infer<typeof schemaGetLeaderboardsRequest>;
+export type GetLeaderboardsRequest = z.infer<
+  typeof schemaGetLeaderboardsRequest
+>;
 
 // /login
 export const schemaLoginRequest = z.union([
@@ -111,7 +153,9 @@ export type ShareRequest = z.infer<typeof schemaShareRequest>;
 export const schemaGetUserAudiencesRequest = z.object({
   pubKey: z.string(),
 });
-export type GetUserAudiencesRequest = z.infer<typeof schemaGetUserAudiencesRequest>;
+export type GetUserAudiencesRequest = z.infer<
+  typeof schemaGetUserAudiencesRequest
+>;
 
 // /audience/builder
 export const schemaCreateAudienceRequest = z.object({
@@ -138,13 +182,17 @@ export type DeleteAudienceRequest = z.infer<typeof schemaDeleteAudienceRequest>;
 export const schemaGetUserCampaignsRequest = z.object({
   publisher: z.string(),
 });
-export type GetUserCampaignsRequest = z.infer<typeof schemaGetUserCampaignsRequest>;
+export type GetUserCampaignsRequest = z.infer<
+  typeof schemaGetUserCampaignsRequest
+>;
 
 // /user/journey
 export const schemaGetUserJourneysRequest = z.object({
   campaignId: z.string(),
 });
-export type GetUserJourneysRequest = z.infer<typeof schemaGetUserJourneysRequest>;
+export type GetUserJourneysRequest = z.infer<
+  typeof schemaGetUserJourneysRequest
+>;
 
 // /audience/verify
 // SEE: VerifyAudienceRequest above
@@ -158,14 +206,14 @@ export const schemaCreateOfferRequest = z.object({
     raffleRewards: schemaOfferReward.nullish(),
     audience: z.string(),
     conversionEvent: schemaConversionEvent,
-  })
+  }),
 });
 export type CreateOfferRequest = z.infer<typeof schemaCreateOfferRequest>;
 
 export const schemaEndOfferRequest = z.object({
   endCampaign: z.object({
     offerId: z.string(),
-  })
+  }),
 });
 export type EndOfferRequest = z.infer<typeof schemaEndOfferRequest>;
 
@@ -173,14 +221,18 @@ export const schemaPayoutPublisherRequest = z.object({
   payoutPublisher: z.object({
     tokenAddress: z.string(),
     amount: z.number(),
-  })
+  }),
 });
-export type PayoutPublisherRequest = z.infer<typeof schemaPayoutPublisherRequest>;
+export type PayoutPublisherRequest = z.infer<
+  typeof schemaPayoutPublisherRequest
+>;
 
 export const schemaCreatePublisherAccountRequest = z.object({
-  createPublisher: z.boolean()
+  createPublisher: z.boolean(),
 });
-export type CreatePublisherAccountRequest = z.infer<typeof schemaCreatePublisherAccountRequest>;
+export type CreatePublisherAccountRequest = z.infer<
+  typeof schemaCreatePublisherAccountRequest
+>;
 
 export const schemaBuildTransactionRequest = z.union([
   schemaCreatePublisherAccountRequest,
@@ -188,7 +240,9 @@ export const schemaBuildTransactionRequest = z.union([
   schemaCreateOfferRequest,
   schemaEndOfferRequest,
 ]);
-export type BuildTransactionRequest = z.infer<typeof schemaBuildTransactionRequest>;
+export type BuildTransactionRequest = z.infer<
+  typeof schemaBuildTransactionRequest
+>;
 
 // /tx/execute
 export const schemaExecuteTransactionRequest = z.union([
@@ -219,4 +273,6 @@ export const schemaExecuteTransactionRequest = z.union([
     }),
   }),
 ]);
-export type ExecuteTransactionRequest = z.infer<typeof schemaExecuteTransactionRequest>;
+export type ExecuteTransactionRequest = z.infer<
+  typeof schemaExecuteTransactionRequest
+>;
