@@ -10,6 +10,9 @@ AUDIENCE CRUD
 - update audience
 - get audiences
 
+PUBLISHER
+- withdraw 
+
 OFFERS
 - create offer
 - get offers
@@ -27,7 +30,7 @@ TARGET CONFIGURATIONS
 - sol staked
 - open position
 
-EVENTS TO CONVERT USERS
+CONVERSION REQUIREMENTS
 - swap
 - burn
 - interact
