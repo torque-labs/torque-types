@@ -3,147 +3,177 @@ import {
   SolanaSignInInput,
   SolanaSignInOutput,
 } from "@solana/wallet-standard-features";
-import { Audience } from "./audience";
-import { ConversionEvent, ConversionEventType } from "./conversion";
-import { OfferMetadata, OfferReward } from "./offer";
+import { Audience, schemaAudience } from "./audience";
+import { ConversionEvent, ConversionEventType, schemaConversionEvent } from "./conversion";
+import { OfferMetadata, OfferReward, schemaOfferMetadata, schemaOfferReward } from "./offer";
 
 /**
  * FUNCTION REQUESTS
  */
-export type BuildAudienceHandlerRequest = {
-  audience: Audience;
-};
-export type BuildAudienceWorkerRequest = {
-  audience: Audience;
-  skipCache?: boolean;
-};
-export type VerifyAudienceRequest = {
-  audience: Audience;
-  publicKey: string;
-};
+export const schemaBuildAudienceRequest = z.object({
+  audience: schemaAudience,
+});
+export type BuildAudienceRequest = z.infer<typeof schemaBuildAudienceRequest>;
+
+export const schemaBuildAudienceWorkerRequest = z.object({
+  audience: schemaAudience,
+  skipCache: z.boolean().optional(),
+});
+export type BuildAudienceWorkerRequest = z.infer<typeof schemaBuildAudienceWorkerRequest>;
+
+export const schemaVerifyAudienceRequest = z.object({
+  audience: schemaAudience,
+  publicKey: z.string(),
+});
+export type VerifyAudienceRequest = z.infer<typeof schemaVerifyAudienceRequest>;
 
 /**
  * API REQUESTS
  */
 
 // /asymmetricReward
-
 export const asymmetricRewardRequestSchema = z.object({
   campaignId: z.string(),
 });
-
-export type AsymmetricRewardRequest = z.infer<
-  typeof asymmetricRewardRequestSchema
->;
+export type AsymmetricRewardRequest = z.infer<typeof asymmetricRewardRequestSchema>;
 
 // /campaigns/:campaignId
-export type GetCampaignsRequest = {
-  campaignId?: string;
-};
+export const getCampaignsRequestSchema = z.object({
+  campaignId: z.string().optional(),
+});
+export type GetCampaignsRequest = z.infer<typeof getCampaignsRequestSchema>;
 
 // /events
-export type SubmitEventRequest = {
-  pubKey: string;
-  type: ConversionEventType;
-  campaignId: string;
-  publisherPubKey: string;
-  attributes?: any;
-  transaction: string;
-  rawTransactionData: any;
-};
+export const submitEventRequestSchema = z.object({
+  pubKey: z.string(),
+  type: z.string(), // Assuming ConversionEventType is a string enum or union
+  campaignId: z.string(),
+  publisherPubKey: z.string(),
+  attributes: z.any().optional(),
+  transaction: z.string(),
+  rawTransactionData: z.any(),
+});
+export type SubmitEventRequest = z.infer<typeof submitEventRequestSchema>;
 
 // /journey
-export type GetJourneyRequest = {
-  conversionEvent: ConversionEvent;
-};
-export type SubmitJourneyRequest = {
-  camapignId: string;
-  publsiherHandle: string;
-};
+export const getJourneyRequestSchema = z.object({
+  conversionEvent: z.any(), // Assuming ConversionEvent is an object or specific type
+});
+export type GetJourneyRequest = z.infer<typeof getJourneyRequestSchema>;
+
+export const submitJourneyRequestSchema = z.object({
+  camapignId: z.string(),
+  publsiherHandle: z.string(),
+});
+export type SubmitJourneyRequest = z.infer<typeof submitJourneyRequestSchema>;
 
 // /leaderboards
-export type GetLeaderboardsRequest = {
-  campaignId: string;
-};
+export const getLeaderboardsRequestSchema = z.object({
+  campaignId: z.string(),
+});
+export type GetLeaderboardsRequest = z.infer<typeof getLeaderboardsRequestSchema>;
 
 // /login
-export type LoginRequest =
-  | {
-      authType: "siws";
-      pubKey: string;
-      payload: {
-        input: SolanaSignInInput;
-        output: SolanaSignInOutput;
-      };
-    }
-  | {
-      authType: "basic";
-      pubKey: string;
-      payload: { input: string; output: string };
-    };
+export const loginRequestSchema = z.union([
+  z.object({
+    authType: z.literal("siws"),
+    pubKey: z.string(),
+    payload: z.object({
+      input: z.any(), // Assuming SolanaSignInInput is an object or specific type
+      output: z.any(), // Assuming SolanaSignInOutput is an object or specific type
+    }),
+  }),
+  z.object({
+    authType: z.literal("basic"),
+    pubKey: z.string(),
+    payload: z.object({
+      input: z.string(),
+      output: z.string(),
+    }),
+  }),
+]);
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
 
 // /offers
-export type GetOffersRequest = {
-  publicKey: string;
-};
+export const getOffersRequestSchema = z.object({
+  publicKey: z.string(),
+});
+export type GetOffersRequest = z.infer<typeof getOffersRequestSchema>;
 
 // /share
-export type ShareRequest = {
-  handle: string;
-  campaignId: string;
-};
+export const shareRequestSchema = z.object({
+  handle: z.string(),
+  campaignId: z.string(),
+});
+export type ShareRequest = z.infer<typeof shareRequestSchema>;
 
 // /audience
-export type GetUserAudiencesResquest = {
-  pubKey: string;
-};
+export const getUserAudiencesRequestSchema = z.object({
+  pubKey: z.string(),
+});
+export type GetUserAudiencesRequest = z.infer<typeof getUserAudiencesRequestSchema>;
 
 // /audience/builder
-export type CreateAudienceRequest = {
-  title: string;
-  description?: string;
-  config: Audience;
-};
-export type UpdateAudienceRequest = {
-  config?: Audience;
-  description?: string;
-  name?: string;
-  id: string;
-};
-export type DeleteAudienceRequest = {
-  id: string;
-};
+export const createAudienceRequestSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  config: schemaAudience,
+});
+export type CreateAudienceRequest = z.infer<typeof createAudienceRequestSchema>;
+
+export const updateAudienceRequestSchema = z.object({
+  config: schemaAudience.optional(),
+  description: z.string().optional(),
+  name: z.string().optional(),
+  id: z.string(),
+});
+export type UpdateAudienceRequest = z.infer<typeof updateAudienceRequestSchema>;
+
+export const deleteAudienceRequestSchema = z.object({
+  id: z.string(),
+});
+export type DeleteAudienceRequest = z.infer<typeof deleteAudienceRequestSchema>;
 
 // /user/campaign
-export type GetUserCampaignsRequest = {
-  publisher: string;
-};
+export const getUserCampaignsRequestSchema = z.object({
+  publisher: z.string(),
+});
+export type GetUserCampaignsRequest = z.infer<typeof getUserCampaignsRequestSchema>;
 
 // /user/journey
-export type GetUserJourneysRequest = {
-  campaignId: string;
-};
+export const getUserJourneysRequestSchema = z.object({
+  campaignId: z.string(),
+});
+export type GetUserJourneysRequest = z.infer<typeof getUserJourneysRequestSchema>;
 
 // /audience/verify
 // SEE: VerifyAudienceRequest above
 
 // /tx/build
-export type CreateOfferRequest = {
-  offerMetadata: OfferMetadata;
-  publsiherReward: OfferReward;
-  userRewards: OfferReward;
-  raffleRewards: OfferReward;
-  audience: Audience;
-  conversionEvent: ConversionEvent;
-};
-export type EndOfferRequest = {
-  offerId: string;
-};
-export type PayoutPublisherRequest = {
-  tokenAddress: string;
-  amount: number;
-};
-export type CreatePublisherAccountRequest = boolean;
+export const schemaCreateOfferRequest = z.object({
+  metadata: schemaOfferMetadata,
+  publsiherReward: schemaOfferReward,
+  userRewards: schemaOfferReward,
+  raffleRewards: schemaOfferReward.nullish(),
+  audience: z.string(),
+  conversionEvent: schemaConversionEvent,
+});
+export type CreateOfferRequest = z.infer<typeof schemaCreateOfferRequest>;
+
+export const schemaEndOfferRequest = z.object({
+  offerId: z.string(),
+});
+export type EndOfferRequest = z.infer<typeof schemaEndOfferRequest>;
+
+export const schemaPayoutPublisherRequest = z.object({
+  tokenAddress: z.string(),
+  amount: z.number(),
+});
+export type PayoutPublisherRequest = z.infer<typeof schemaPayoutPublisherRequest>;
+
+export const schemaCreatePublisherAccountRequest = z.boolean();
+export type CreatePublisherAccountRequest = z.infer<typeof schemaCreatePublisherAccountRequest>;
+
 export type BuildTransactionRewardRequest =
   | CreatePublisherAccountRequest
   | PayoutPublisherRequest
@@ -151,12 +181,6 @@ export type BuildTransactionRewardRequest =
   | EndOfferRequest;
 
 // /tx/execute
-// export type ExecuteTransactionRequest = {
-//   userSignature: string;
-//   blockHash: string;
-//   campaignId: string;
-// };
-
 export const executeTransactionRequestSchema = z.union([
   z.object({
     createCampaign: z.object({
@@ -185,7 +209,4 @@ export const executeTransactionRequestSchema = z.union([
     }),
   }),
 ]);
-
-export type ExecuteTransactionRequest = z.infer<
-  typeof executeTransactionRequestSchema
->;
+export type ExecuteTransactionRequest = z.infer<typeof executeTransactionRequestSchema>;

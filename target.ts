@@ -1,14 +1,6 @@
-// The target of an audience.
-export type Target =
-  | TokenHoldingTarget
-  | OpenPositionTarget
-  | StakedSolTarget
-  | SwapTarget
-  | BridgeTarget
-  | ProgramInteractionTarget
-  | VoteTarget
-  | NftMintTarget;
+import { z } from 'zod';
 
+// Enums
 export enum TargetType {
   TOKEN_HOLDING = "TOKEN_HOLDING",
   OPEN_POSITION = "OPEN_POSITION",
@@ -22,91 +14,113 @@ export enum TargetType {
 }
 
 // TOKEN HOLDING
-export type TokenHoldingTarget = {
-  targetType: TargetType.TOKEN_HOLDING;
-  requirement: TokenHoldingRequirements;
-};
-export type TokenHoldingRequirements = {
-  tokenAddress?: string;
-  collectionAddress?: string;
-  minAmount?: number;
-  maxAmount?: number;
-};
+const schemaTokenHoldingRequirements = z.object({
+  tokenAddress: z.string().optional(),
+  collectionAddress: z.string().optional(),
+  minAmount: z.number().optional(),
+  maxAmount: z.number().optional(),
+});
+
+const schemaTokenHoldingTarget = z.object({
+  targetType: z.literal(TargetType.TOKEN_HOLDING),
+  requirement: schemaTokenHoldingRequirements,
+});
 
 // OPEN POSITION
-export type OpenPositionTarget = {
-  targetType: TargetType.OPEN_POSITION;
-  requirement: OpenPositionRequirements;
-};
-export type OpenPositionRequirements = {
-  tokenAddress: string;
-  programAddress?: string;
-  minAmount?: number;
-  maxAmount?: number;
-};
+const schemaOpenPositionRequirements = z.object({
+  tokenAddress: z.string(),
+  programAddress: z.string().optional(),
+  minAmount: z.number().optional(),
+  maxAmount: z.number().optional(),
+});
+
+const schemaOpenPositionTarget = z.object({
+  targetType: z.literal(TargetType.OPEN_POSITION),
+  requirement: schemaOpenPositionRequirements,
+});
 
 // STAKED SOL
-export type StakedSolTarget = {
-  targetType: TargetType.STAKED_SOL;
-  requirement: StakedSolRequirements;
-};
-export type StakedSolRequirements = {
-  validatorAddress?: string;
-  minAmount: number;
-  maxAmount?: number;
-};
+const schemaStakedSolRequirements = z.object({
+  validatorAddress: z.string().optional(),
+  minAmount: z.number(),
+  maxAmount: z.number().optional(),
+});
+
+const schemaStakedSolTarget = z.object({
+  targetType: z.literal(TargetType.STAKED_SOL),
+  requirement: schemaStakedSolRequirements,
+});
 
 // SWAP
-export type SwapTarget = {
-  targetType: TargetType.SWAP;
-  requirement: StakedSolRequirements;
-};
-export type SwapRequirements = {
-  inTokenAddress?: string;
-  inMinAmount?: number;
-  outTokenAddress?: string;
-  outMinAmount?: number;
-};
+const schemaSwapRequirements = z.object({
+  inTokenAddress: z.string().optional(),
+  inMinAmount: z.number().optional(),
+  outTokenAddress: z.string().optional(),
+  outMinAmount: z.number().optional(),
+});
+
+const schemaSwapTarget = z.object({
+  targetType: z.literal(TargetType.SWAP),
+  requirement: schemaSwapRequirements,
+});
 
 // BRIDGE
-export type BridgeTarget = {
-  targetType: TargetType.BRIDGE;
-  requirement: StakedSolRequirements;
-};
-export type BridgeRequirements = {
-  direction: "INBOUND" | "OUTBOUND";
-  mint: string;
-  minAmount?: number;
-  maxAmount?: number;
-  withinDays?: number;
-};
+const schemaBridgeRequirements = z.object({
+  direction: z.enum(["INBOUND", "OUTBOUND"]),
+  mint: z.string(),
+  minAmount: z.number().optional(),
+  maxAmount: z.number().optional(),
+  withinDays: z.number().optional(),
+});
+
+const schemaBridgeTarget = z.object({
+  targetType: z.literal(TargetType.BRIDGE),
+  requirement: schemaBridgeRequirements,
+});
 
 // PROGRAM INTERACTION
-export type ProgramInteractionTarget = {
-  targetType: TargetType.BRIDGE;
-  requirement: StakedSolRequirements;
-};
-export type ProgramInteractionRequirement = {
-  programAddresses: string[];
-  interactions?: number;
-  withinDays?: number;
-};
+const schemaProgramInteractionRequirement = z.object({
+  programAddresses: z.array(z.string()),
+  interactions: z.number().optional(),
+  withinDays: z.number().optional(),
+});
+
+const schemaProgramInteractionTarget = z.object({
+  targetType: z.literal(TargetType.PROGRAM_INTERACTION),
+  requirement: schemaProgramInteractionRequirement,
+});
 
 // VOTE
-export type VoteTarget = {
-  targetType: TargetType.VOTE;
-  requirement: VoteRequirements;
-};
-export type VoteRequirements = {
-  proposal: string;
-  // choice?: string; // TODO
-};
+const schemaVoteRequirements = z.object({
+  proposal: z.string(),
+  // choice: z.string().optional(), // TODO
+});
+
+const schemaVoteTarget = z.object({
+  targetType: z.literal(TargetType.VOTE),
+  requirement: schemaVoteRequirements,
+});
 
 // NFT MINT
-export type NftMintTarget = {
-  targetType: TargetType.NFT_MINT;
-  requirement: NftMintRequirements;
-};
-export type NftMintRequirements = {
-  collectionAddress: string;
-};
+const schemaNftMintRequirements = z.object({
+  collectionAddress: z.string(),
+});
+
+const schemaNftMintTarget = z.object({
+  targetType: z.literal(TargetType.NFT_MINT),
+  requirement: schemaNftMintRequirements,
+});
+
+// Union Type for Target
+export const schemaTarget = z.discriminatedUnion('targetType', [
+  schemaTokenHoldingTarget,
+  schemaOpenPositionTarget,
+  schemaStakedSolTarget,
+  schemaSwapTarget,
+  schemaBridgeTarget,
+  schemaProgramInteractionTarget,
+  schemaVoteTarget,
+  schemaNftMintTarget,
+]);
+
+export type Target = z.infer<typeof schemaTarget>;

@@ -1,6 +1,6 @@
 {
   "name": "@torque-labs/torque-types",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Types to be used across Torque's system.",
   "main": "index.ts",
   "scripts": {
